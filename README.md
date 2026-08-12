@@ -15,7 +15,7 @@
   <img alt="iOS 14+" src="https://img.shields.io/badge/iOS%20%2F%20iPadOS-14%2B-0A84FF?logo=apple">
   <img alt="Metal renderer" src="https://img.shields.io/badge/renderer-Metal-5E5CE6">
   <img alt="Physical iPad tested" src="https://img.shields.io/badge/physical%20iPad-tested-30D158">
-  <a href="https://github.com/chrissotraidis/harkinianpad/releases/tag/v0.1.0-preview.3"><img alt="Download developer preview IPA" src="https://img.shields.io/badge/IPA-developer%20preview-FF9F0A"></a>
+  <a href="https://github.com/chrissotraidis/harkinianpad/releases/tag/v0.1.0-preview.4"><img alt="Download developer preview IPA" src="https://img.shields.io/badge/IPA-developer%20preview-FF9F0A"></a>
   <img alt="ROM not included" src="https://img.shields.io/badge/game%20data-not%20included-FF453A">
 </p>
 
@@ -37,7 +37,7 @@ relicense Shipwright, third-party projects, or game material.
 
 | Option | Status | What to do |
 |---|---|---|
-| Developer-preview `.ipa` | **Available with a computer** | [Download preview 0.1.0 build 3](https://github.com/chrissotraidis/harkinianpad/releases/download/v0.1.0-preview.3/HarkinianPad-0.1.0-preview.3-unsigned.ipa), then re-sign it with your Apple ID through AltStore Classic and AltServer on macOS or Windows by following the [installation guide](docs/INSTALL_IPA.md). |
+| Developer-preview `.ipa` | **Available with a computer** | [Download preview 0.1.0 build 4](https://github.com/chrissotraidis/harkinianpad/releases/download/v0.1.0-preview.4/HarkinianPad-0.1.0-preview.4-unsigned.ipa), then re-sign it with your Apple ID through AltStore Classic and AltServer on macOS or Windows by following the [installation guide](docs/INSTALL_IPA.md). |
 | AltStore PAL / computer-free install | **Not available** | The current IPA is not an AltStore PAL release. Installing AltStore Classic through PAL does not remove Classic's requirement for AltServer on a Mac or Windows PC. |
 | Local iPad build | **Available now** | Build and sign with your Apple development team using the instructions below. |
 | Simulator | **Available now** | Best for development and UI testing; it is not a substitute for physical-device testing. |
@@ -222,13 +222,13 @@ To create the unsigned, re-signable developer-preview package, run:
 scripts/package-ios.sh
 ```
 
-The default preview identity is HarkinianPad `0.1.0`, build `3`, with bundle
+The default preview identity is HarkinianPad `0.1.0`, build `4`, with bundle
 identifier `com.chrissotraidis.harkinianpad`. The package is named
-`HarkinianPad-0.1.0-preview.3-unsigned.ipa`. It contains no maintainer
+`HarkinianPad-0.1.0-preview.4-unsigned.ipa`. It contains no maintainer
 certificate or provisioning profile; a sideload tool such as AltStore Classic
 must re-sign it for the installer's device.
 
-[Download developer preview 0.1.0 build 3](https://github.com/chrissotraidis/harkinianpad/releases/download/v0.1.0-preview.3/HarkinianPad-0.1.0-preview.3-unsigned.ipa).
+[Download developer preview 0.1.0 build 4](https://github.com/chrissotraidis/harkinianpad/releases/download/v0.1.0-preview.4/HarkinianPad-0.1.0-preview.4-unsigned.ipa).
 The release page records the exact SHA-256 for the published asset.
 
 The audit rejects Simulator products, stale signing material, original ROMs,
@@ -240,7 +240,7 @@ maintainer-signed package, use `REQUIRE_SIGNED=1 scripts/package-ios.sh`.
 <details>
 <summary><strong>Where is the IPA?</strong></summary>
 
-[Download the unsigned developer-preview IPA from GitHub Releases](https://github.com/chrissotraidis/harkinianpad/releases/tag/v0.1.0-preview.3).
+[Download the unsigned developer-preview IPA from GitHub Releases](https://github.com/chrissotraidis/harkinianpad/releases/tag/v0.1.0-preview.4).
 It is not an App Store, TestFlight, or AltStore PAL build. A Mac or Windows PC
 running AltServer is required to sign it with your own Apple ID through
 [AltStore Classic](docs/INSTALL_IPA.md). There is currently no supported
