@@ -108,7 +108,9 @@ Before publishing or sharing a build, follow the
 HarkinianPad never downloads or bundles game data.
 
 1. Launch HarkinianPad once so iOS creates its Files-visible folder.
-2. Open **Files → On My iPad → HarkinianPad**.
+2. Open **Files → On My iPad → HarkinianPad**. This is the app's
+   `Documents` folder. In LiveContainer, open HarkinianPad's container and use
+   its `Documents` folder, not `SystemData`.
 3. Move your supported Ocarina of Time ROM into that folder.
 4. Return to HarkinianPad and select **Rescan**.
 5. Leave the app open while it creates the local `oot.o2r` archive.

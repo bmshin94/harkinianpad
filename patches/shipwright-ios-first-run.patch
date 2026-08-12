@@ -77,15 +77,16 @@ index 9b165f0..29cb087 100644
                          } else {
                              extractStep = ES_VERIFY;
                          }
-@@ -676,11 +706,13 @@ void OTRGlobals::RunExtract(int argc, char* argv[]) {
+@@ -676,11 +706,14 @@ void OTRGlobals::RunExtract(int argc, char* argv[]) {
                      case PS_FIRST: {
  #ifdef __IOS__
                          promptStep = PS_WAIT;
 +                        const char* filesLocation = IsIOSCompactDisplay() ? "On My iPhone" : "On My iPad";
 +                        const std::string message =
 +                            "Open Files and copy your legally acquired .z64, .n64, or .v64 ROM into\n" +
-+                            std::string(filesLocation) + " > HarkinianPad. Leave HarkinianPad open.\n" +
-+                            "Return here and choose Rescan.";
++                            std::string(filesLocation) + " > HarkinianPad (its Documents folder).\n" +
++                            "LiveContainer: use this app's Documents folder, not SystemData.\n" +
++                            "Leave HarkinianPad open, then return here and choose Rescan.";
                          SohGui::RegisterPopup(
 -                            "Import ROM in Files",
 -                            "Open Files and copy your legally acquired .z64, .n64, or .v64 ROM into\n"
