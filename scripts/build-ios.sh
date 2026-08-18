@@ -8,6 +8,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 MODE="${1:---device}"
+PREFIX_MAP="-ffile-prefix-map=$ROOT=."
 
 case "$MODE" in
     --device|--simulator)
@@ -29,7 +30,9 @@ fi
 
 if [ "$MODE" = "--simulator" ]; then
     IOS_PLATFORM=SIMULATORARM64 "$ROOT/scripts/configure-ios.sh" --soh
-    cmake --build "$ROOT/build-ios-soh-sim" --target soh --config Release
+    cmake --build "$ROOT/build-ios-soh-sim" --target soh --config Release -- \
+        "OTHER_CFLAGS=\$(inherited) $PREFIX_MAP" \
+        "OTHER_CPLUSPLUSFLAGS=\$(inherited) $PREFIX_MAP"
     echo
     echo "Simulator app:"
     echo "  $ROOT/build-ios-soh-sim/soh/Release-iphonesimulator/HarkinianPad.app"
@@ -44,7 +47,9 @@ fi
 rm -rf "$ROOT/build-ios-soh/soh/Release-iphoneos/HarkinianPad.app"
 
 set -- cmake --build "$ROOT/build-ios-soh" --target soh --config Release -- \
-    -destination generic/platform=iOS
+    -destination generic/platform=iOS \
+    "OTHER_CFLAGS=\$(inherited) $PREFIX_MAP" \
+    "OTHER_CPLUSPLUSFLAGS=\$(inherited) $PREFIX_MAP"
 if [ -z "${DEVELOPMENT_TEAM:-}" ]; then
     set -- "$@" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 fi

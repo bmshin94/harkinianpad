@@ -65,6 +65,28 @@ package-safety proof. It can be wrapped as a developer-preview IPA and
 re-signed by the installer, but it is not directly installable on a standard
 device.
 
+## Controller regression and practical test suite
+
+The controller owner is libultraship's SDL2 physical-device manager. Run the
+focused slot/lifecycle regression after reproducing the pinned sources:
+
+```sh
+scripts/test-controller-reconnect.sh
+```
+
+It deterministically covers missed removal with held input, neutral input after
+stale ownership is released, a sole return to player 1, an additional player 2,
+two-controller preservation, foreground reconciliation, and deliberate device
+disable/restore. The practical libultraship suite must use Debug because two
+event-metadata tests intentionally depend on `_DEBUG`:
+
+```sh
+cmake -S sources/Shipwright -B build-host-tests \
+  -DLUS_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug
+cmake --build build-host-tests --target lus_tests --parallel
+build-host-tests/libultraship/tests/lus_tests
+```
+
 ## Preview identity and version
 
 HarkinianPad's app version is intentionally independent of the pinned
@@ -73,14 +95,14 @@ Shipwright source version. The defaults are:
 | Field | Value |
 |---|---|
 | App version | `0.1.0` |
-| Build number | `4` |
+| Build number | `5` |
 | Bundle identifier | `com.chrissotraidis.harkinianpad` |
 
 For a later preview, increment the build number without changing the app
 version:
 
 ```sh
-HARKINIANPAD_BUILD_NUMBER=4 scripts/build-ios.sh --device
+HARKINIANPAD_BUILD_NUMBER=5 scripts/build-ios.sh --device
 ```
 
 Use `HARKINIANPAD_VERSION` only for a deliberate app-version change. It must
@@ -129,7 +151,7 @@ scripts/package-ios.sh
 ```
 
 The default output is
-`artifacts/HarkinianPad-0.1.0-preview.4-unsigned.ipa`. It is deliberately
+`artifacts/HarkinianPad-0.1.0-preview.5-unsigned.ipa`. It is deliberately
 unsigned so AltStore Classic or another compatible personal-signing tool can
 re-sign it for the installer's device.
 
@@ -244,9 +266,15 @@ Confirm that:
    returns and the editor is unavailable.
 7. A save can be created or selected and Link can be controlled in active
    gameplay for at least ten minutes.
-8. Disconnecting and reconnecting the controller does not crash the app and
-   restores control without losing the current save.
-9. Rumble and motion input are recorded as supported, unsupported, or not
+8. Test Bluetooth disconnect/reconnect and natural sleep/wake both while the
+   game remains active and after a background/foreground cycle. Held buttons,
+   triggers, and sticks must become neutral while disconnected, and the touch
+   overlay should return or hide according to the connected-controller state.
+9. Test wired disconnect/reconnect separately when the controller supports it.
+10. Exercise the full mapping and confirm a sole return keeps player 1. With
+   two controllers, disconnect or sleep either one and confirm the other keeps
+   its player slot and the return uses the original/free slot.
+11. Rumble and motion input are recorded as supported, unsupported, or not
    exposed for the exact controller model; do not infer either capability
    from the extended-gamepad declaration.
 

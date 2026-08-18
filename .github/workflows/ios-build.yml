@@ -55,6 +55,9 @@ jobs:
             build-ios-soh/_deps
           key: harkinianpad-ios-${{ runner.os }}-${{ hashFiles('patches/**', 'scripts/*.sh') }}
 
+      - name: Run controller lifecycle regression
+        run: scripts/test-controller-reconnect.sh
+
       - name: Reproduce unsigned arm64 iPhoneOS app
         run: scripts/build-ios.sh --device
 

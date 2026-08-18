@@ -15,7 +15,7 @@
   <img alt="iOS 14+" src="https://img.shields.io/badge/iOS%20%2F%20iPadOS-14%2B-0A84FF?logo=apple">
   <img alt="Metal renderer" src="https://img.shields.io/badge/renderer-Metal-5E5CE6">
   <img alt="Physical iPad tested" src="https://img.shields.io/badge/physical%20iPad-tested-30D158">
-  <a href="https://github.com/chrissotraidis/harkinianpad/releases/tag/v0.1.0-preview.4"><img alt="Download developer preview IPA" src="https://img.shields.io/badge/IPA-developer%20preview-FF9F0A"></a>
+  <a href="https://github.com/chrissotraidis/harkinianpad/releases/tag/v0.1.0-preview.5"><img alt="Download developer preview IPA" src="https://img.shields.io/badge/IPA-developer%20preview-FF9F0A"></a>
   <img alt="ROM not included" src="https://img.shields.io/badge/game%20data-not%20included-FF453A">
 </p>
 
@@ -37,7 +37,7 @@ relicense Shipwright, third-party projects, or game material.
 
 | Option | Status | What to do |
 |---|---|---|
-| Developer-preview `.ipa` | **Available with a computer** | [Download preview 0.1.0 build 4](https://github.com/chrissotraidis/harkinianpad/releases/download/v0.1.0-preview.4/HarkinianPad-0.1.0-preview.4-unsigned.ipa), then re-sign it with your Apple ID through AltStore Classic and AltServer on macOS or Windows by following the [installation guide](docs/INSTALL_IPA.md). |
+| Developer-preview `.ipa` | **Available with a computer** | [Download preview 0.1.0 build 5](https://github.com/chrissotraidis/harkinianpad/releases/download/v0.1.0-preview.5/HarkinianPad-0.1.0-preview.5-unsigned.ipa), then re-sign it with your Apple ID through AltStore Classic and AltServer on macOS or Windows by following the [installation guide](docs/INSTALL_IPA.md). |
 | AltStore PAL / computer-free install | **Not available** | The current IPA is not an AltStore PAL release. Installing AltStore Classic through PAL does not remove Classic's requirement for AltServer on a Mac or Windows PC. |
 | Local iPad build | **Available now** | Build and sign with your Apple development team using the instructions below. |
 | Simulator | **Available now** | Best for development and UI testing; it is not a substitute for physical-device testing. |
@@ -49,9 +49,10 @@ on-device archive loading, touch gameplay, save loading, the settings menu,
 and in-place app updates have all been exercised on that hardware.
 
 Audio has been heard during repeated physical-iPad playtests. Headphone,
-Bluetooth, and interruption recovery still need a complete device matrix. The
-iOS controller path is present, but physical controller reconnect, rumble, and
-motion testing is also incomplete.
+Bluetooth, and interruption recovery still need a complete device matrix.
+Controller sleep/reconnect ownership now has deterministic regression coverage
+and physical-iPad foreground proof; hands-on Bluetooth, wired, natural-sleep,
+mapping, rumble, motion, and two-controller acceptance remains open.
 
 ## Get started
 
@@ -152,6 +153,22 @@ usable. Closing it restores the controls only when Touch Controls is enabled.
 The touch stick is currently an eight-way control. A physical controller
 remains the preferred option for full analog precision.
 
+## Physical controllers
+
+HarkinianPad uses libultraship's SDL2 controller manager. It reconciles the
+currently attached controllers at startup, controller add/remove/remap events,
+foreground resume, and a bounded active check. A valid controller keeps its
+player slot; a stale controller is closed and releases its slot and held input;
+a sole returning controller reclaims player 1; and an additional controller
+uses the next free slot without displacing player 1. Existing mappings remain
+in Shipwright's controller configuration.
+
+These guarantees are covered by deterministic fake-controller tests and the
+startup/foreground path has executed on the physical iPad. That evidence is
+separate from hands-on controller acceptance: no Bluetooth, wired,
+natural-sleep, full-mapping, or two-controller scenario is claimed as passed
+until it is exercised with that hardware.
+
 ## Current screenshots
 
 <table>
@@ -182,7 +199,7 @@ was supplied locally and is not part of this repository.
 | Game setup | Files-visible ROM import and local `oot.o2r` loading work |
 | Touch | Stick, D-pad, A/B/Z, C buttons, shoulders, Start, and persistent menu access |
 | Saves | File creation/loading and in-place app updates preserving Documents data work |
-| Input options | Touch, keyboard, mouse/trackpad, and SDL's iOS controller path are included |
+| Input options | Touch, keyboard, mouse/trackpad, and reconciled SDL2 controller slots are included |
 | Packaging | ROM/game-data exclusions and signed-package checks are built into the scripts |
 
 For detailed engineering evidence and remaining hardware checks, see
@@ -222,25 +239,30 @@ To create the unsigned, re-signable developer-preview package, run:
 scripts/package-ios.sh
 ```
 
-The default preview identity is HarkinianPad `0.1.0`, build `4`, with bundle
+The default preview identity is HarkinianPad `0.1.0`, build `5`, with bundle
 identifier `com.chrissotraidis.harkinianpad`. The package is named
-`HarkinianPad-0.1.0-preview.4-unsigned.ipa`. It contains no maintainer
+`HarkinianPad-0.1.0-preview.5-unsigned.ipa`. It contains no maintainer
 certificate or provisioning profile; a sideload tool such as AltStore Classic
 must re-sign it for the installer's device.
 
-[Download developer preview 0.1.0 build 4](https://github.com/chrissotraidis/harkinianpad/releases/download/v0.1.0-preview.4/HarkinianPad-0.1.0-preview.4-unsigned.ipa).
-The release page records the exact SHA-256 for the published asset.
+[Download developer preview 0.1.0 build 5](https://github.com/chrissotraidis/harkinianpad/releases/download/v0.1.0-preview.5/HarkinianPad-0.1.0-preview.5-unsigned.ipa).
+[Download its checksum](https://github.com/chrissotraidis/harkinianpad/releases/download/v0.1.0-preview.5/HarkinianPad-0.1.0-preview.5-unsigned.ipa.sha256).
+The IPA SHA-256 is
+`f505c0837a984f881d158ef3524f53d476a778e6351afabff49b611bbf47cef2`.
 
 The audit rejects Simulator products, stale signing material, original ROMs,
 ROM-derived `oot*.o2r`/`.otr` files, and prohibited game data. For a local
 maintainer-signed package, use `REQUIRE_SIGNED=1 scripts/package-ios.sh`.
+The preview is a GitHub-hosted unsigned, self-signable package, not an App
+Store or TestFlight artifact. It does not currently carry a standalone Apple
+privacy manifest; that remains an official-store distribution gate.
 
 ## Frequently asked questions
 
 <details>
 <summary><strong>Where is the IPA?</strong></summary>
 
-[Download the unsigned developer-preview IPA from GitHub Releases](https://github.com/chrissotraidis/harkinianpad/releases/tag/v0.1.0-preview.4).
+[Download the unsigned developer-preview IPA from GitHub Releases](https://github.com/chrissotraidis/harkinianpad/releases/tag/v0.1.0-preview.5).
 It is not an App Store, TestFlight, or AltStore PAL build. A Mac or Windows PC
 running AltServer is required to sign it with your own Apple ID through
 [AltStore Classic](docs/INSTALL_IPA.md). There is currently no supported

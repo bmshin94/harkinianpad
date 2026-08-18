@@ -87,6 +87,56 @@ physical-device proof.
 
 ## Evidence log
 
+### 2026-08-18 — SDL2 controller lifecycle repair and Preview 5 passed automated/device gates
+
+- Backend and defect: Shipwright input is owned by libultraship's SDL2
+  `ConnectedPhysicalDeviceManager`, not by a HarkinianPad-local or Apple
+  GameController manager. The old refresh path cleared its instance-to-handle
+  map, reopened devices without closing old handles, and depended on
+  add/remove events. A removal missed during sleep/background could therefore
+  leave a detached handle occupying the gameplay slot indefinitely.
+- Targeted repair: current SDL controller enumeration and
+  `SDL_GameControllerGetAttached()` now reconcile instance identity and four
+  stable player slots at startup, add/remove/remap events, foreground resume,
+  and a bounded active check. Attached devices keep their slots; stale handles
+  close and release held input; a sole return reclaims player 1; an additional
+  controller takes the next free slot; mappings and deliberate device disables
+  remain intact. The SDL subsystem is never restarted.
+- Automated proof: `scripts/test-controller-reconnect.sh` passed the missed
+  removal/held-input, neutral release, sole return, additional player 2,
+  two-controller preservation, foreground, and preference cases. The complete
+  libultraship Debug suite passed 428/428 tests. Repository safety, clean patch
+  replay, and `git diff --check` passed. ROM-free arm64 iPhoneOS and arm64
+  iPhoneSimulator Release builds both completed successfully.
+- Physical-iPad proof: Apple Development build `0.1.0` (5), bundle ID
+  `com.chrissotraidis.harkinianpad`, was strictly signature-verified and
+  installed in place on the 12.9-inch iPad Pro (6th generation), iPadOS 26.6.
+  The exact process remained live; the app log recorded SDL audio and mapping
+  database initialization, controller reconciliation at `startup`, save
+  metadata initialization, and `foreground` reconciliation after a real
+  Settings/app foreground cycle.
+- Preservation proof: Documents and Library were backed up separately before
+  installation and read back afterward. The ROM, generated `oot.o2r`, all
+  three saves, `imgui.ini`, and the app preferences plist were byte-identical.
+  Canonical hashes of the controller mappings and touch-preference subtrees
+  were identical. The enclosing JSON changed only because startup added the
+  previously absent default touch-opacity keys.
+- Preview package: the audited unsigned, self-signable
+  `HarkinianPad-0.1.0-preview.5-unsigned.ipa` has SHA-256
+  `f505c0837a984f881d158ef3524f53d476a778e6351afabff49b611bbf47cef2`.
+  It is arm64/iPhoneOS 14+, contains the ROM-free `soh.o2r`, scoped rights
+  notice, and 42 discovered license files, with no ROM, generated game data,
+  saves, logs, maintainer signature/profile, personal path, or unexpected
+  dynamic library. The existing packager is not deterministic: two immediate
+  packaging runs were not byte-identical. No standalone Apple privacy manifest
+  is present, so this remains a GitHub unsigned preview rather than an App
+  Store/TestFlight artifact.
+- Hardware boundary: no physical Bluetooth controller, wired controller,
+  natural sleep/wake, held-input release, complete mapping, rumble/motion, or
+  two-controller scenario was exercised. Those remain M4 hands-on gates; the
+  deterministic tests, build, install, PID, log, and foreground proof do not
+  claim them.
+
 ### 2026-07-27 — Unsigned developer-preview packaging path passed locally
 
 - The canonical `scripts/build-ios.sh --device` replay completed with
