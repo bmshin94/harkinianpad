@@ -36,6 +36,9 @@ This is the final gate for a public source snapshot or downloadable IPA.
       contain the user's ROM or generated `oot.o2r`.
 - [ ] Confirm the IPA carries `RIGHTS_AND_LICENSES.md` and the discovered
       dependency license files under `ThirdPartyLicenses/`.
+- [ ] For App Store or TestFlight distribution, add and audit the required
+      Apple privacy manifest. The GitHub unsigned preview does not currently
+      claim official-store readiness.
 - [ ] Re-sign and update-install the exact IPA on physical iPhone and iPad.
       Prefer AltStore Classic when available. Apple Development signing of the
       exact extracted payload is an accepted fallback when AltStore is not
@@ -59,7 +62,9 @@ This is the final gate for a public source snapshot or downloadable IPA.
 
 ## Current blockers
 
-- Physical controller, reconnect, rumble, and motion testing is incomplete.
+- Automated stale-handle, reconnect, slot, held-input release, and foreground
+  coverage passes. Physical Bluetooth, wired, natural-sleep, full-mapping,
+  rumble/motion, and two-controller acceptance is still incomplete.
 - The complete lifecycle/interruption matrix remains open.
 - Written Shipwright clarification remains open before paid access, commercial
   binary licensing, or official-store distribution. It does not block the

@@ -19,6 +19,7 @@ ref/*
 DerivedData/
 *.xcarchive
 *.ipa
+*.ipa.sha256
 *.app
 
 # --- Apple signing material / private keys ---
